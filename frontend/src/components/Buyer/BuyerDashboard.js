@@ -1,7 +1,6 @@
 import React from 'react';
 import { ShoppingBag, Heart, CreditCard, Star, Clock, ChevronRight } from 'lucide-react';
-import './Dashboard.css'; // පොදු styles
-import './BuyerDashboard.css'; // Buyer ට විශේෂ styles
+import '../Buyer/BuyerDashboard.css'; // Buyer ට විශේෂ styles
 
 const BuyerDashboard = () => {
     const stats = [

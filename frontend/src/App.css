@@ -37,3 +37,19 @@
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
+
+
+
+
+.main-layout {
+    display: flex; /* Sidebar ekai Content ekai paththin paththa thiyanna */
+    align-items: flex-start;
+    width: 100%;
+}
+
+.content-area {
+    flex-grow: 1; /* Ithuru area eka okkoma content ekata ganna */
+    padding: 20px;
+    background-color: #f9fafb;
+    min-height: 100vh;
+}

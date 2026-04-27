@@ -1,0 +1,172 @@
+/* Container ekatama adalawa sidebar eke layout eka */
+.sidebar {
+    width: 280px; /* Sidebar eke palala */
+    min-width: 280px;
+    height: 100vh; /* Screen eke pura usa */
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px;
+    overflow-y: auto; /* Content wadi unoth scroll wenna */
+}
+
+.sidebar-section {
+    margin-bottom: 30px;
+}
+
+.filter-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #374151;
+}
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    color: #4b5563;
+}
+
+.sidebar-item:hover {
+    background-color: #f3f4f6;
+}
+
+.sidebar-item.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+/* Chevron rotate animation */
+.rotate {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+/* Price Slider styling */
+.price-slider {
+    width: 100%;
+    margin: 15px 0;
+    cursor: pointer;
+}
+
+.price-display {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Ratings styling */
+.rating-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.stars-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+}
+
+
+
+/* Sub category list styling */
+.sub-category-list {
+    margin-left: 25px; /* පැත්තකින් ඉඩ තියන්න */
+    border-left: 2px solid #e5e7eb;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    animation: slideDown 0.3s ease;
+}
+
+.sub-item {
+    padding: 6px 15px;
+    font-size: 14px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 4px;
+}
+
+.sub-item:hover {
+    color: #10b981;
+    background: #f0fdf4;
+}
+
+/* Slide down animation */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.rotate {
+    transform: rotate(180deg);
+}
+
+
+.category-group {
+    margin-bottom: 5px;
+}
+
+.cat-name-text {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.sub-category-list {
+    margin-left: 15px;
+    padding-left: 20px;
+    border-left: 1px solid #e2e8f0; /* image එකේ තියෙන වම් පැත්තේ ඉර */
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sub-item-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #64748b;
+    padding: 4px 0;
+    transition: 0.2s;
+}
+
+.sub-item-label:hover {
+    color: #2563eb;
+}
+
+/* Checkbox එක ලස්සන කරන්න (Optional) */
+.sub-item-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #2563eb; /* Blue color tick box */
+}
+
+.item-name {
+    margin-left: 5px;
+}

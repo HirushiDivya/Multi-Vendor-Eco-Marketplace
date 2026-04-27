@@ -35,6 +35,8 @@ const Register = () => {
         }
     };
 
+    
+
     return (
         <div className="login-container"> {/* එකම container class එක */}
             <div className="glass-card">

@@ -1,4 +1,4 @@
-.navbar {
+/*.navbar {
     height: 70px;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
@@ -90,3 +90,123 @@
 .logout-btn-nav:hover {
     transform: scale(1.1);
 }
+
+
+*/
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 40px;
+    background: #ffffff;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.04);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand-name {  font-size: 1.5rem; font-weight: 800; }
+.brand-highlight { color: #10b981; }
+
+/* Center Search Bar */
+.nav-center { flex: 1; display: flex; justify-content: center; max-width: 500px; margin: 0 20px; }
+
+
+
+
+.search-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    color: #94a3b8;
+}
+
+.main-nav-search {
+    width: 100%;
+    padding: 10px 20px 10px 45px;
+    border-radius: 50px;
+    border: 1px solid #f1f5f9;
+    background: #f8fafc;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.main-nav-search:focus {
+    background: #fff;
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+/* Cart & Profile */
+.nav-right { display: flex; align-items: center; gap: 20px; }
+
+.cart-wrapper {
+    position: relative;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s;
+}
+
+.cart-wrapper:hover { transform: scale(1.1); }
+
+.cart-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.user-profile-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 12px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background: #10b981;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.user-info-text { display: flex; flex-direction: column; }
+.user-name { font-size: 14px; font-weight: 600; color: #1e293b; }
+.user-role { font-size: 11px; color: #64748b; text-transform: capitalize; }
+
+.logout-nav-btn {
+    border: none;
+    background: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.logout-nav-btn:hover { background: #fee2e2; }

@@ -11,7 +11,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = async (e) => {
+   /* const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
@@ -32,7 +32,45 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
-    };
+    };*/
+    const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+        const response = await axios.post('http://localhost:5000/api/users/login', {
+            email,
+            password,
+        });
+
+        if (response.data.session) {
+            const { access_token, user } = response.data.session;
+
+            // 1. LocalStorage වල දත්ත Save කිරීම
+            localStorage.setItem('token', access_token);
+            localStorage.setItem('user', JSON.stringify(user));
+
+            // 2. Role එක හඳුනා ගැනීම (Supabase metadata හෝ response එකේ ඇති ආකාරය අනුව)
+            // සාමාන්‍යයෙන් user.user_metadata.role හෝ user.role ලෙස පැවතිය හැක.
+            const userRole = user.user_metadata?.role || user.role;
+
+            // 3. Role එක අනුව අදාළ Dashboard එකට Navigate කිරීම
+            if (userRole === 'seller') {
+                navigate('/sdashboard');
+            } else if (userRole === 'buyer') {
+                navigate('/bDashbord');
+            } else {
+                // කිසිවක් නැත්නම් default dashboard එකකට
+                navigate('/dashboard');
+            }
+        }
+    } catch (err) {
+        setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <div className="login-container">

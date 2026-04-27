@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'; // useEffect එකත් මෙතනම දාගන්න
 import axios from 'axios';
 import { Package, Users, DollarSign, TrendingUp, MoreVertical, Plus, X, Image as ImageIcon } from 'lucide-react';
-import './Dashboard.css';
-import { supabase } from '../supabaseClient'; // හරිම path එක ලබා දෙන්න
+import '../Seller/Seller_Dashboard.css';
+import { supabase } from '../../supabaseClient'; // හරිම path එක ලබා දෙන්න
 import Swal from 'sweetalert2';
 
 const Dashboard = () => {
@@ -25,6 +25,7 @@ const Dashboard = () => {
         stock: '',
         description: '',
         category: 'Vegetables',
+        sub_category: '',
         image: null
     });
 
@@ -57,6 +58,32 @@ const Dashboard = () => {
     ];
 
 
+    // --- New Handlers for Drag, Drop & URL ---
+
+    // 1. Drag Over (පින්තූරය උඩින් අරන් එන විට)
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    // 2. Drop Logic (පින්තූරය අතහැරිය විට)
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            setNewProduct({ ...newProduct, image: file });
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    // 3. URL Paste Logic (URL එකක් පේස්ට් කළ විට)
+    const handleUrlChange = (e) => {
+        const url = e.target.value;
+        setImagePreview(url); // Preview එකට කෙලින්ම URL එක දානවා
+        setNewProduct({ ...newProduct, image: null }); // File එකක් නෙවෙයි නිසා image null කරනවා
+    };
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -65,132 +92,13 @@ const Dashboard = () => {
             setImagePreview(URL.createObjectURL(file)); // පින්තූරය පෙන්වීමට URL එකක් සාදා ගනී
         }
     };
-    /*
-        const handleAddProduct = async (e) => {
-            e.preventDefault();
-    
-            // Backend එක බලාපොරොත්තු වන විදිහට Object එක හදන්න
-            const productData = {
-                title: newProduct.name,
-                description: newProduct.description,
-                price: parseFloat(newProduct.price),
-                category: newProduct.category,
-                stock_quantity: parseInt(newProduct.stock),
-                seller_id: sellerId, // දැන් නියම UUID එක මෙතනට වැටෙනවා
-                image_url: imagePreview
-            };
-    
-            try {
-                // Image එක නැතුව දැනට දත්ත යවා බලන්න (JSON ලෙස)
-                const response = await axios.post('http://localhost:5000/api/products/add', productData);
-    
-                console.log("Success:", response.data);
-                setIsModalOpen(false);
-                alert("Product Added!");
-            } catch (error) {
-                // Error එක විස්තරාත්මකව බලන්න මෙහෙම console කරන්න
-                console.error("Error Detail:", error.response?.data || error.message);
-            }
-        };
-    
-    
-    const handleAddProduct = async (e) => {
-        e.preventDefault();
-    
-        // 🟢 FormData object එකක් සාදාගන්න
-        const formData = new FormData();
-        formData.append('title', newProduct.name);
-        formData.append('description', newProduct.description);
-        formData.append('price', parseFloat(newProduct.price));
-        formData.append('category', newProduct.category);
-        formData.append('stock_quantity', parseInt(newProduct.stock));
-        formData.append('seller_id', sellerId);
-        
-        // image file එක එකතු කරන්න
-        if (newProduct.image) {
-            formData.append('image', newProduct.image);
-        }
-    
-        try {
-            // 🟢 headers වලට 'multipart/form-data' ලබා දිය යුතුයි
-            const response = await axios.post('http://localhost:5000/api/products/add', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            
-            console.log("Success:", response.data);
-            setIsModalOpen(false);
-            alert("Product Added!");
-            fetchProducts(); // අලුත් බඩු ටික නැවත load කරන්න
-        } catch (error) {
-            console.error("Error Detail:", error.response?.data || error.message);
-        }
-    };
-    
-    
-
 
     const handleAddProduct = async (e) => {
         e.preventDefault();
-
         try {
-            let finalImageUrl = "";
+            let finalImageUrl = imagePreview;
 
-            // 1. පින්තූරය තියෙනවා නම් ඒක මුලින්ම Upload කරන්න
-            if (newProduct.image) {
-                const file = newProduct.image;
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}.${fileExt}`; // හැමතිස්සේම අලුත් නමක් දෙන්න
-
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from('product-images')
-                    .upload(fileName, file);
-
-                if (uploadError) {
-                    console.error("Upload Error:", uploadError);
-                    return alert("Image Upload Failed!");
-                }
-
-                // 2. 🟢 වැදගත්ම පියවර: Blob URL එක වෙනුවට Public URL එක ගන්න
-                const { data: publicUrlData } = supabase.storage
-                    .from('product-images')
-                    .getPublicUrl(fileName);
-
-                finalImageUrl = publicUrlData.publicUrl; // දැන් මෙතන තියෙන්නේ https://... link එකක්
-            }
-
-            // 3. Database එකට දත්ත යවන්න
-            const productData = {
-                title: newProduct.name,
-                description: newProduct.description,
-                price: parseFloat(newProduct.price),
-                category: newProduct.category,
-                stock_quantity: parseInt(newProduct.stock),
-                seller_id: sellerId,
-                image_url: finalImageUrl // 👈 දැන් මෙතනට යන්නේ නිවැරදි link එක
-            };
-
-            // Backend එකට හෝ කෙලින්ම supabase database එකට insert කරන්න
-            const response = await axios.post('http://localhost:5000/api/products/add', productData);
-
-            alert("Product Added!");
-            setIsModalOpen(false);
-            fetchProducts();
-
-        } catch (error) {
-            console.error("General Error:", error);
-        }
-    };
-*/
-
-/*
-    const handleAddProduct = async (e) => {
-        e.preventDefault();
-        try {
-            let finalImageUrl = imagePreview; // පරණ image එක default තියාගන්න
-
-            // 1. අලුත් පින්තූරයක් තෝරාගෙන තිබේ නම් පමණක් upload කරන්න
+            // 1. අලුත් පින්තූරයක් තිබේ නම් පමණක් upload කරන්න
             if (newProduct.image) {
                 const file = newProduct.image;
                 const fileName = `${Date.now()}.${file.name.split('.').pop()}`;
@@ -211,112 +119,64 @@ const Dashboard = () => {
                 description: newProduct.description,
                 price: parseFloat(newProduct.price),
                 category: newProduct.category,
+                sub_category: newProduct.sub_category,
                 stock_quantity: parseInt(newProduct.stock),
                 seller_id: sellerId,
                 image_url: finalImageUrl
             };
 
             if (isEditing) {
-                // 🟢 UPDATE (Edit mode එකේදී)
+                // 🟢 UPDATE 
                 await axios.put(`http://localhost:5000/api/products/update/${currentProductId}`, productData);
-                alert("Product Updated!");
+
+                // SweetAlert for Success Update
+                Swal.fire({
+                    title: 'Updated!',
+                    text: 'Your product has been updated successfully.',
+                    icon: 'success',
+                    confirmButtonColor: '#3b82f6'
+                });
+
             } else {
-                // 🟢 ADD (New product mode එකේදී)
+                // 🟢 ADD 
                 await axios.post('http://localhost:5000/api/products/add', productData);
-                alert("Product Added!");
+
+                // SweetAlert for Success Add
+                Swal.fire({
+                    title: 'Added!',
+                    text: 'New product has been added to your store.',
+                    icon: 'success',
+                    confirmButtonColor: '#10b981'
+                });
             }
 
             setIsModalOpen(false);
-            resetForm(); // Form එක හිස් කරන්න
+            resetForm();
             fetchProducts();
+
         } catch (error) {
             console.error("Error saving product:", error);
+
+            // SweetAlert for Error
+            Swal.fire({
+                title: 'Error!',
+                text: 'Something went wrong while saving the product.',
+                icon: 'error',
+                confirmButtonColor: '#ef4444'
+            });
         }
     };
-*/
-const handleAddProduct = async (e) => {
-    e.preventDefault();
-    try {
-        let finalImageUrl = imagePreview; 
-
-        // 1. අලුත් පින්තූරයක් තිබේ නම් පමණක් upload කරන්න
-        if (newProduct.image) {
-            const file = newProduct.image;
-            const fileName = `${Date.now()}.${file.name.split('.').pop()}`;
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('product-images')
-                .upload(fileName, file);
-
-            if (!uploadError) {
-                const { data: publicUrlData } = supabase.storage
-                    .from('product-images')
-                    .getPublicUrl(fileName);
-                finalImageUrl = publicUrlData.publicUrl;
-            }
-        }
-
-        const productData = {
-            title: newProduct.name,
-            description: newProduct.description,
-            price: parseFloat(newProduct.price),
-            category: newProduct.category,
-            stock_quantity: parseInt(newProduct.stock),
-            seller_id: sellerId,
-            image_url: finalImageUrl
-        };
-
-        if (isEditing) {
-            // 🟢 UPDATE 
-            await axios.put(`http://localhost:5000/api/products/update/${currentProductId}`, productData);
-            
-            // SweetAlert for Success Update
-            Swal.fire({
-                title: 'Updated!',
-                text: 'Your product has been updated successfully.',
-                icon: 'success',
-                confirmButtonColor: '#3b82f6'
-            });
-
-        } else {
-            // 🟢 ADD 
-            await axios.post('http://localhost:5000/api/products/add', productData);
-            
-            // SweetAlert for Success Add
-            Swal.fire({
-                title: 'Added!',
-                text: 'New product has been added to your store.',
-                icon: 'success',
-                confirmButtonColor: '#10b981'
-            });
-        }
-
-        setIsModalOpen(false);
-        resetForm(); 
-        fetchProducts();
-
-    } catch (error) {
-        console.error("Error saving product:", error);
-        
-        // SweetAlert for Error
-        Swal.fire({
-            title: 'Error!',
-            text: 'Something went wrong while saving the product.',
-            icon: 'error',
-            confirmButtonColor: '#ef4444'
-        });
-    }
-};
 
 
     // Form එක reset කරන්න ලේසි වෙන්න මේක දාගන්න
     const resetForm = () => {
         setIsEditing(false);
         setCurrentProductId(null);
-        setNewProduct({ name: '', price: '', stock: '', description: '', category: 'Vegetables', image: null });
+        setNewProduct({ name: '', price: '', stock: '', description: '', category: 'Vegetables', sub_category: '',  image: null });
         setImagePreview(null);
     };
 
-    const handleEdit= (product) => {
+    const handleEdit = (product) => {
         setIsEditing(true);
         setCurrentProductId(product.id);
         setNewProduct({
@@ -325,6 +185,7 @@ const handleAddProduct = async (e) => {
             stock: product.stock_quantity,
             description: product.description,
             category: product.category,
+            category: product.sub_category,
             image: null // පින්තූරය අලුතින් දානවා නම් විතරක් update කරන්න පුළුවන්
         });
         setImagePreview(product.image_url);
@@ -332,46 +193,46 @@ const handleAddProduct = async (e) => {
     };
 
 
-    
-    // 🟢 මෙතන 'async' අනිවාර්යයෙන්ම තිබිය යුතුයි
-const handleDelete = async (id) => {
-    // SweetAlert Confirm Dialog එක පෙන්වීම
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3b82f6', // ඔයාගේ dashboard එකේ blue color එක
-        cancelButtonColor: '#ef4444',  // red color එක
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel'
-    }).then(async (result) => {
-        // User 'Yes' ක්ලික් කළොත් පමණක් delete පියවර ක්‍රියාත්මක වේ
-        if (result.isConfirmed) {
-            try {
-                const response = await axios.delete(`http://localhost:5000/api/products/delete/${id}`);
-                
-                if (response.status === 200) {
-                    // සාර්ථකව මැකුණු බව පෙන්වන Alert එක
-                    Swal.fire(
-                        'Deleted!',
-                        'Your product has been deleted.',
-                        'success'
-                    );
-                    fetchProducts(); // Table එක refresh කිරීම
-                }
-            } catch (error) {
-                console.error("Error deleting product:", error);
-                Swal.fire(
-                    'Error!',
-                    'Something went wrong. Could not delete the product.',
-                    'error'
-                );
-            }
-        }
-    });
-};
 
+    // 🟢 මෙතන 'async' අනිවාර්යයෙන්ම තිබිය යුතුයි
+    const handleDelete = async (id) => {
+        // SweetAlert Confirm Dialog එක පෙන්වීම
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3b82f6', // ඔයාගේ dashboard එකේ blue color එක
+            cancelButtonColor: '#ef4444',  // red color එක
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel'
+        }).then(async (result) => {
+            // User 'Yes' ක්ලික් කළොත් පමණක් delete පියවර ක්‍රියාත්මක වේ
+            if (result.isConfirmed) {
+                try {
+                    const response = await axios.delete(`http://localhost:5000/api/products/delete/${id}`);
+
+                    if (response.status === 200) {
+                        // සාර්ථකව මැකුණු බව පෙන්වන Alert එක
+                        Swal.fire(
+                            'Deleted!',
+                            'Your product has been deleted.',
+                            'success'
+                        );
+                        fetchProducts(); // Table එක refresh කිරීම
+                    }
+                } catch (error) {
+                    console.error("Error deleting product:", error);
+                    Swal.fire(
+                        'Error!',
+                        'Something went wrong. Could not delete the product.',
+                        'error'
+                    );
+                }
+            }
+        });
+    };
+ 
     return (
         <div className="dashboard-container">
             {/* Page Header */}
@@ -422,6 +283,7 @@ const handleDelete = async (id) => {
                                 <th>Stock</th>
                                 <th>description</th>
                                 <th>Category</th>
+                                <th>Sub Category</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -454,7 +316,8 @@ const handleDelete = async (id) => {
                                         </td>
                                         <td>{p.description}</td>
                                         <td>{p.category}</td>
-                                        
+                                        <td>{p.sub_category}</td>
+
                                         <td>
                                             <div style={{ display: 'flex', gap: '10px' }}>
                                                 {/* Edit Button */}
@@ -513,16 +376,38 @@ const handleDelete = async (id) => {
                         </div>
 
                         <form onSubmit={handleAddProduct} className="space-y-4">
+
+
+
                             {/* 📷 Image Upload Section */}
                             <div className="form-group">
-                                <label>Product Image</label>
-                                <div className="image-upload-wrapper" onClick={() => document.getElementById('imageInput').click()}>
+                                <label>Product Image (Drag & Drop or Paste URL)</label>
+
+                                {/* Drag & Drop Area */}
+                                <div
+                                    className="image-upload-wrapper"
+                                    onDragOver={handleDragOver}
+                                    onDrop={handleDrop}
+                                    onClick={() => document.getElementById('imageInput').click()}
+                                    style={{
+                                        border: '2px dashed #cbd5e1',
+                                        borderRadius: '12px',
+                                        cursor: 'pointer',
+                                        textAlign: 'center',
+                                        padding: '20px',
+                                        background: '#f8fafc',
+                                        minHeight: '150px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                >
                                     {imagePreview ? (
-                                        <img src={imagePreview} alt="Preview" className="preview-img" />
+                                        <img src={imagePreview} alt="Preview" className="preview-img" style={{ maxWidth: '100%', maxHeight: '140px', borderRadius: '8px' }} />
                                     ) : (
                                         <div className="upload-icon-text">
-                                            <ImageIcon size={32} />
-                                            <span>Click to upload product image</span>
+                                            <ImageIcon size={32} color="#94a3b8" />
+                                            <p style={{ fontSize: '14px', color: '#64748b' }}>Drag & Drop Image or Click to Upload</p>
                                         </div>
                                     )}
                                     <input
@@ -533,8 +418,25 @@ const handleDelete = async (id) => {
                                         onChange={handleImageChange}
                                     />
                                 </div>
-                            </div>
 
+                                {/* URL Input Area */}
+                                <div style={{ marginTop: '10px' }}>
+                                    <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '5px' }}>Or Paste Image URL:</p>
+                                    <input
+                                        type="text"
+                                        placeholder="https://example.com/image.jpg"
+                                        className="url-input"
+                                        style={{
+                                            width: '100%',
+                                            padding: '10px',
+                                            borderRadius: '8px',
+                                            border: '1px solid #e2e8f0',
+                                            fontSize: '14px'
+                                        }}
+                                        onChange={handleUrlChange}
+                                    />
+                                </div>
+                            </div>
                             <div className="form-group">
                                 <label>Product Name</label>
                                 <div className="input-wrapper">
@@ -601,6 +503,21 @@ const handleDelete = async (id) => {
                                     <option>Grains</option>
                                 </select>
                             </div>
+
+                            <div className="form-group">
+                                <label>Product sub_category</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="text"
+                                        placeholder="carret"
+                                        required
+                                        value={newProduct.sub_category}
+                                        onChange={(e) => setNewProduct({ ...newProduct, sub_category: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+
 
                             <div className="modal-footer">
                                 <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
