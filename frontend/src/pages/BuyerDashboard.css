@@ -1,0 +1,35 @@
+/* Stat cards styles කලින් එකටම සමානයි */
+
+.buyer-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.order-history-card {
+    background: white;
+    padding: 25px;
+    border-radius: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.product-mini-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 15px;
+    margin-bottom: 12px;
+}
+
+.product-img-placeholder {
+    width: 50px;
+    height: 50px;
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.status-shipped { background: #e0f2fe; color: #0369a1; }
+.status-delivered { background: #dcfce7; color: #15803d; }

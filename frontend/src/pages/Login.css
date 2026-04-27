@@ -1,0 +1,227 @@
+/* Animated Background */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(-45deg, #f0fdf4, #dcfce7, #ccfbf1, #f0fdf4);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 40px;
+    padding: 50px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.brand-icon-wrapper {
+    background: white;
+    padding: 15px;
+    border-radius: 18px;
+    display: inline-block;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    margin-bottom: 20px;
+}
+
+.brand-icon {
+    width: 50px;
+    height: 50px;
+    background: #22c55e;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+h2 {
+    color: #1e293b;
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0;
+}
+
+.subtitle {
+    color: #64748b;
+    margin-top: 8px;
+    margin-bottom: 35px;
+}
+
+/* Form Styles */
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    margin-left: 5px;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper svg {
+    position: absolute;
+    left: 15px;
+    color: #94a3b8;
+    transition: 0.3s;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 15px 15px 15px 50px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.8);
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-wrapper input:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+.input-wrapper input:focus + svg {
+    color: #22c55e;
+}
+
+/* Button Styles */
+.signin-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    border: none;
+    background: #0f172a;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.signin-btn:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.signin-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Error Message */
+.error-box {
+    background: #fee2e2;
+    border-left: 4px solid #ef4444;
+    color: #b91c1c;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Footer */
+.footer-divider {
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.register-btn {
+    background: none;
+    border: 2px solid #0f172a;
+    padding: 12px 25px;
+    border-radius: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 15px auto 0;
+}
+
+.register-btn:hover {
+    background: #0f172a;
+    color: white;
+}
+
+
+/* Register page */
+.role-selector {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.role-option {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.3s;
+    font-weight: 600;
+    color: #64748b;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.role-option.active {
+    border-color: #22c55e;
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.success-box {
+    background: #dcfce7;
+    border-left: 4px solid #22c55e;
+    color: #15803d;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+.form-label-custom {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 10px;
+    text-align: left;
+}
