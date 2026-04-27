@@ -1,10 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const supabase = require('./config/supabaseClient');
-
 const app = express();
 
 const productRoutes = require('./routes/productRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 app.use(cors());
 app.use(express.json());
@@ -14,6 +14,8 @@ app.use(express.json());
 
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/products', productRoutes);
+app.use('/api/admin', adminRoutes);
+
 // සියලුම නිෂ්පාදන ලබා ගැනීම (Read Products)
 app.get('/api/products', async (req, res) => {
   const { data, error } = await supabase

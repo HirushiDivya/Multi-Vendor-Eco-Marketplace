@@ -1,7 +1,13 @@
 const supabase = require('../config/supabaseClient');
+const express = require('express');
+const path = require('path');
+const app = express();
+
+// 'uploads' folder එක static ලෙස නම් කරන්න
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const addProduct = async (req, res) => {
-  const { title, description, price, category, stock_quantity, seller_id } = req.body;
+  const { title, description, price, category, sub_category, stock_quantity, seller_id, image_url } = req.body;
 
   // මෙතනදී 'products' කියන්නේ අපේ SQL Table එකේ නමයි
   const { data, error } = await supabase
@@ -12,8 +18,10 @@ const addProduct = async (req, res) => {
         description, 
         price, 
         category, 
+        sub_category ,
         stock_quantity, 
-        seller_id // මේක අනිවාර්යයෙන්ම Login එකෙන් ලැබුණු UUID එක වෙන්න ඕනේ
+        seller_id, // මේක අනිවාර්යයෙන්ම Login එකෙන් ලැබුණු UUID එක වෙන්න ඕනේ
+        image_url
       }
     ])
     .select();
@@ -54,5 +62,21 @@ const deleteProduct = async (req, res) => {
   res.status(200).json({ message: 'Product deleted successfully!' });
 };
 
+// Seller කෙනෙකුට අදාළ සියලුම නිෂ්පාදන ලබාගැනීම
+const getProductsBySeller = async (req, res) => {
+  const { sellerId } = req.params; // URL එකෙන් seller_id එක ලබාගනී
+
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('seller_id', sellerId); // seller_id එක සමාන ඒවා පමණක් තෝරයි
+
+  if (error) return res.status(400).json({ error: error.message });
+
+  res.status(200).json(data);
+};
+
+
+
 // මේවා export කිරීමට අමතක කරන්න එපා
-module.exports = { addProduct, updateProduct, deleteProduct };
+module.exports = { addProduct, updateProduct, deleteProduct , getProductsBySeller};
